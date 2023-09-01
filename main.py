@@ -1,11 +1,7 @@
 #!/usr/bin/python3
 """GUI Handling"""
-from models.book import Book
-from models.section import Section
 from models.library import Library
-from storage.storageFile import FileStorage
 import PyQt5.QtWidgets as qtw
-storage = FileStorage()
 
 
 class GUI(qtw.QWidget):
@@ -17,29 +13,9 @@ class GUI(qtw.QWidget):
         # vertical Layout
         self.setLayout(qtw.QVBoxLayout())
 
-        # Reteriving Data
-        booksData = storage.reload()
-        # print(booksData)
-
-        # Building our Library
+        # initialising our Library
         self.library = Library("Main Library")
-        for title, bookData in booksData.items():
-            book = Book(title, bookData["author"], bookData["cost"])
-            sectionTitle = bookData["section"]
-
-            isSection = None
-            for section in self.library.sections:
-                if section.getTitle() == sectionTitle:
-                    isSection = section
-                    break
-
-            if isSection:
-                isSection.addBook(book)
-            else:
-                section = Section(sectionTitle)
-                section.addBook(book)
-                self.library.addSection(section)
-
+        
         # show books elements
         self.showLabel = qtw.QLabel("Show All Books")
         self.showButton = qtw.QPushButton("Show")

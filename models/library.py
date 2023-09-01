@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 """Library class"""
+from models.book import Book
+from models.section import Section
+from storage.storageFile import FileStorage
+storage = FileStorage()
 
 
 class Library:
@@ -11,6 +15,26 @@ class Library:
     def __init__(self, title):
         """constructor"""
         self.__title = title
+
+        # Reteriving Data
+        booksData = storage.reload()
+        # print(booksData)
+        for title, bookData in booksData.items():
+            book = Book(title, bookData["author"], bookData["cost"])
+            sectionTitle = bookData["section"]
+
+            isSection = None
+            for section in self.sections:
+                if section.getTitle() == sectionTitle:
+                    isSection = section
+                    break
+
+            if isSection:
+                isSection.addBook(book)
+            else:
+                section = Section(sectionTitle)
+                section.addBook(book)
+                self.addSection(section)
 
     def addSection(self, sectionName):
         """Adds section to the section list"""
